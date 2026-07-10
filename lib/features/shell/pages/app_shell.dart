@@ -2,20 +2,48 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../home/pages/home_dashboard_page.dart';
+import '../../notifications/providers/notification_provider.dart';
 import '../../reading/pages/surah_list_page.dart';
 import '../../search/pages/search_page.dart';
 import '../providers/app_shell_provider.dart';
 
 /// Main app shell with bottom navigation.
-class AppShell extends StatelessWidget {
+class AppShell extends StatefulWidget {
   const AppShell({super.key});
 
+  @override
+  State<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   static const _pages = [
     HomeDashboardPage(),
     SurahListPage(),
     SearchPage(),
     _PlaceholderPage(title: 'Profile', icon: Icons.person_outline),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<NotificationProvider>().loadNotifications();
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      context.read<NotificationProvider>().loadNotifications();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

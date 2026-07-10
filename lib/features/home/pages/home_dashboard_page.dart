@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/navigation/notification_navigation.dart';
 import '../../../core/navigation/insights_navigation.dart';
 import '../../../core/navigation/reading_navigation.dart';
 import '../../../core/navigation/tracking_navigation.dart';
@@ -10,6 +11,7 @@ import '../../shell/providers/app_shell_provider.dart';
 import '../../../core/widgets/error_state_widget.dart';
 import '../../../core/widgets/skeleton_loader.dart';
 import '../providers/dashboard_provider.dart';
+import '../../notifications/providers/notification_provider.dart';
 import '../../insights/providers/insights_provider.dart';
 import '../../insights/widgets/insights_preview_section.dart';
 import '../widgets/continue_reading_card.dart';
@@ -36,6 +38,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<DashboardProvider>().loadDashboard();
       context.read<InsightsProvider>().loadInsights();
+      context.read<NotificationProvider>().loadNotifications();
     });
   }
 
@@ -45,10 +48,22 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
       appBar: AppBar(
         title: Text(AppConstants.appName),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
-            tooltip: 'Notifications',
+          Consumer<NotificationProvider>(
+            builder: (context, provider, _) {
+              return IconButton(
+                tooltip: 'Notifications',
+                onPressed: () => NotificationNavigation.openNotifications(context),
+                icon: Badge(
+                  isLabelVisible: provider.unreadCount > 0,
+                  label: Text(
+                    provider.unreadCount > 9
+                        ? '9+'
+                        : '${provider.unreadCount}',
+                  ),
+                  child: const Icon(Icons.notifications_outlined),
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -77,6 +92,8 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
               await provider.refresh();
               if (!context.mounted) return;
               await context.read<InsightsProvider>().refresh();
+              if (!context.mounted) return;
+              await context.read<NotificationProvider>().refresh();
             },
             child: _buildContent(provider),
           );

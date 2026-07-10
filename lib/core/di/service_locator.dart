@@ -1,9 +1,11 @@
 import '../../data/datasources/local/hive_local_datasource.dart';
+import '../../data/datasources/local/notification_local_datasource.dart';
 import '../../data/datasources/local/tracking_local_datasource.dart';
 import '../../data/datasources/remote/quran_api_client.dart';
 import '../../data/datasources/remote/quran_remote_datasource.dart';
 import '../../data/repositories/dashboard_repository.dart';
 import '../../data/repositories/insights_repository.dart';
+import '../../data/repositories/notification_repository.dart';
 import '../../data/repositories/quran_repository.dart';
 import '../../data/repositories/reading_repository.dart';
 import '../../data/repositories/search_repository.dart';
@@ -25,6 +27,8 @@ class ServiceLocator {
   late final TrackingLocalDataSource trackingLocalDataSource;
   late final TrackingRepository trackingRepository;
   late final InsightsRepository insightsRepository;
+  late final NotificationLocalDataSource notificationLocalDataSource;
+  late final NotificationRepository notificationRepository;
 
   bool _initialized = false;
 
@@ -69,6 +73,16 @@ class ServiceLocator {
     insightsRepository = InsightsRepository(
       hiveLocal: localDataSource,
       dashboardRepository: dashboardRepository,
+      trackingRepository: trackingRepository,
+    );
+
+    notificationLocalDataSource = NotificationLocalDataSource();
+    await notificationLocalDataSource.init();
+
+    notificationRepository = NotificationRepository(
+      local: notificationLocalDataSource,
+      dashboardRepository: dashboardRepository,
+      insightsRepository: insightsRepository,
       trackingRepository: trackingRepository,
     );
 

@@ -32,6 +32,7 @@ Track of what has been implemented and what remains. Updated after each feature.
 | Search repository | Done | Local + remote search, history, suggestions |
 | Tracking repository | Done | Bookmarks, notes, reflections, goals, milestones, history |
 | Insights repository | Done | Habit insights, summaries, gentle recommendations |
+| Notification repository | Done | In-app reminders, smart scheduling, preferences |
 | App shell | Done | Bottom nav: Home, Read, Search, Profile placeholder |
 | Main entry point | Done | Hive init, DI, theme |
 
@@ -146,11 +147,21 @@ Track of what has been implemented and what remains. Updated after each feature.
 
 ---
 
-## Feature 7: Notifications — NOT STARTED
+## Feature 7: Notifications — DONE
 
-- Daily reminders
-- Goal/streak reminders
-- Smart scheduling
+| Component | Status | Notes |
+|-----------|--------|-------|
+| AppNotificationModel / NotificationPreferencesModel | Done | In-app only, manual serialization |
+| NotificationLocalDataSource | Done | Hive box for notifications + preferences |
+| NotificationRepository | Done | Smart scheduling, deduplication, local generation |
+| NotificationProvider | Done | Load, sync, read/dismiss, preferences |
+| NotificationsPage | Done | In-app notification center with pull-to-refresh |
+| NotificationTile | Done | Swipe to dismiss, unread indicator |
+| NotificationSettingsSheet | Done | Schedule presets, smart scheduling, type toggles |
+| NotificationNavigation | Done | Tap actions to reading, goals, milestones |
+| Home badge | Done | Unread count on bell icon |
+| App lifecycle sync | Done | Refresh on app resume via AppShell observer |
+| Offline-first | Done | No FCM — all reminders generated and stored locally |
 
 ---
 
@@ -169,7 +180,7 @@ Track of what has been implemented and what remains. Updated after each feature.
 - Firestore sync
 - Crashlytics
 - Analytics (opt-in)
-- FCM notifications
+- FCM push notifications (in-app notifications done locally)
 
 ---
 
@@ -177,7 +188,6 @@ Track of what has been implemented and what remains. Updated after each feature.
 
 1. **Audio Player** — recitation playback, mini/full player
 2. **Profile & Settings** — user preferences and Firebase auth
-3. **Notifications** — reminders
 
 ---
 
