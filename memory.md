@@ -31,6 +31,7 @@ Track of what has been implemented and what remains. Updated after each feature.
 | Reading repository | Done | getSurah, downloadSurah, preferences, scroll position |
 | Search repository | Done | Local + remote search, history, suggestions |
 | Tracking repository | Done | Bookmarks, notes, reflections, goals, milestones, history |
+| Insights repository | Done | Habit insights, summaries, gentle recommendations |
 | App shell | Done | Bottom nav: Home, Read, Search, Profile placeholder |
 | Main entry point | Done | Hive init, DI, theme |
 
@@ -126,10 +127,22 @@ Track of what has been implemented and what remains. Updated after each feature.
 
 ---
 
-## Feature 6: Insights & Recommendations — NOT STARTED
+## Feature 6: Insights & Recommendations — DONE
 
-- Reading habit insights
-- Gentle recommendations
+| Component | Status | Notes |
+|-----------|--------|-------|
+| InsightModel / RecommendationModel / ReadingSummaryModel | Done | Manual serialization, category & action enums |
+| JuzHelper | Done | Page-based juz progress for insights |
+| InsightsRepository | Done | Local pattern analysis, summaries, recommendations |
+| InsightsProvider | Done | Loading, loaded, error states |
+| InsightsPage | Done | Recommendations, weekly/monthly/lifetime summaries, activity chart |
+| InsightCard / RecommendationCard | Done | Reusable insight & recommendation tiles |
+| ReadingSummaryCard | Done | Period stats display |
+| ReadingActivityChart | Done | Weekly bar chart from daily activity |
+| InsightsPreviewSection | Done | Home dashboard preview with top recommendation |
+| InsightsNavigation | Done | Full page + recommendation tap actions |
+| Home integration | Done | Preview section, pull-to-refresh, Insights quick action |
+| Offline-first | Done | All insights generated locally from Hive sessions |
 
 ---
 
@@ -165,7 +178,6 @@ Track of what has been implemented and what remains. Updated after each feature.
 1. **Audio Player** — recitation playback, mini/full player
 2. **Profile & Settings** — user preferences and Firebase auth
 3. **Notifications** — reminders
-4. **Insights** — habit analytics
 
 ---
 

@@ -12,13 +12,13 @@ class QuickActionsSection extends StatelessWidget {
     this.onBrowseSurahs,
     this.onSearch,
     this.onBookmarks,
-    this.onSettings,
+    this.onInsights,
   });
 
   final VoidCallback? onBrowseSurahs;
   final VoidCallback? onSearch;
   final VoidCallback? onBookmarks;
-  final VoidCallback? onSettings;
+  final VoidCallback? onInsights;
 
   @override
   Widget build(BuildContext context) {
@@ -44,9 +44,9 @@ class QuickActionsSection extends StatelessWidget {
               onTap: onBookmarks,
             ),
             _ActionButton(
-              icon: Icons.settings_outlined,
-              label: 'Settings',
-              onTap: onSettings,
+              icon: Icons.insights_outlined,
+              label: 'Insights',
+              onTap: onInsights,
             ),
           ],
         ),

@@ -128,10 +128,15 @@ class HiveLocalDataSource {
 
   // --- Reading Sessions ---
 
-  Future<List<ReadingSessionModel>> getTodaySessions() async {
-    final all = _sessionsBox.values
+  Future<List<ReadingSessionModel>> getAllSessions() async {
+    return _sessionsBox.values
         .map((e) => ReadingSessionModel.fromMap(e as Map<dynamic, dynamic>))
-        .toList();
+        .toList()
+      ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
+  }
+
+  Future<List<ReadingSessionModel>> getTodaySessions() async {
+    final all = await getAllSessions();
 
     final today = DateTime.now();
     return all.where((s) {

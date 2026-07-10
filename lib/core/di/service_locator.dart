@@ -1,12 +1,13 @@
 import '../../data/datasources/local/hive_local_datasource.dart';
+import '../../data/datasources/local/tracking_local_datasource.dart';
 import '../../data/datasources/remote/quran_api_client.dart';
 import '../../data/datasources/remote/quran_remote_datasource.dart';
 import '../../data/repositories/dashboard_repository.dart';
+import '../../data/repositories/insights_repository.dart';
 import '../../data/repositories/quran_repository.dart';
 import '../../data/repositories/reading_repository.dart';
 import '../../data/repositories/search_repository.dart';
 import '../../data/repositories/tracking_repository.dart';
-import '../../data/datasources/local/tracking_local_datasource.dart';
 
 /// Central dependency registration for the application.
 class ServiceLocator {
@@ -23,6 +24,7 @@ class ServiceLocator {
   late final SearchRepository searchRepository;
   late final TrackingLocalDataSource trackingLocalDataSource;
   late final TrackingRepository trackingRepository;
+  late final InsightsRepository insightsRepository;
 
   bool _initialized = false;
 
@@ -62,6 +64,12 @@ class ServiceLocator {
     trackingRepository = TrackingRepository(
       trackingLocal: trackingLocalDataSource,
       hiveLocal: localDataSource,
+    );
+
+    insightsRepository = InsightsRepository(
+      hiveLocal: localDataSource,
+      dashboardRepository: dashboardRepository,
+      trackingRepository: trackingRepository,
     );
 
     _initialized = true;

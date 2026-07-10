@@ -8,6 +8,7 @@ import 'features/reading/providers/reading_provider.dart';
 import 'features/search/providers/search_provider.dart';
 import 'features/shell/providers/app_shell_provider.dart';
 import 'features/tracking/providers/tracking_provider.dart';
+import 'features/insights/providers/insights_provider.dart';
 import 'features/shell/pages/app_shell.dart';
 
 /// Root application widget.
@@ -39,6 +40,11 @@ class QuranCompanionApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => AppShellProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => InsightsProvider(
+            repository: locator.insightsRepository,
+          ),
         ),
         ChangeNotifierProvider(
           create: (_) => TrackingProvider(

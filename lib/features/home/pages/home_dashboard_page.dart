@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/navigation/insights_navigation.dart';
 import '../../../core/navigation/reading_navigation.dart';
 import '../../../core/navigation/tracking_navigation.dart';
 import '../../../core/theme/app_spacing.dart';
@@ -9,6 +10,8 @@ import '../../shell/providers/app_shell_provider.dart';
 import '../../../core/widgets/error_state_widget.dart';
 import '../../../core/widgets/skeleton_loader.dart';
 import '../providers/dashboard_provider.dart';
+import '../../insights/providers/insights_provider.dart';
+import '../../insights/widgets/insights_preview_section.dart';
 import '../widgets/continue_reading_card.dart';
 import '../widgets/daily_goal_card.dart';
 import '../widgets/daily_verse_card.dart';
@@ -32,6 +35,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<DashboardProvider>().loadDashboard();
+      context.read<InsightsProvider>().loadInsights();
     });
   }
 
@@ -69,7 +73,11 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
           }
 
           return RefreshIndicator(
-            onRefresh: provider.refresh,
+            onRefresh: () async {
+              await provider.refresh();
+              if (!context.mounted) return;
+              await context.read<InsightsProvider>().refresh();
+            },
             child: _buildContent(provider),
           );
         },
@@ -135,6 +143,8 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                     const SizedBox(height: AppSpacing.md),
                     ReadingStreakCard(streak: provider.streak),
                     const SizedBox(height: AppSpacing.md),
+                    const InsightsPreviewSection(),
+                    const SizedBox(height: AppSpacing.md),
                     if (provider.dailyVerse != null)
                       DailyVerseCard(verse: provider.dailyVerse!)
                     else
@@ -159,7 +169,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
                       onSearch: () =>
                           context.read<AppShellProvider>().setIndex(2),
                       onBookmarks: () => TrackingNavigation.openBookmarks(context),
-                      onSettings: () => _showComingSoon(context, 'Settings'),
+                      onInsights: () => InsightsNavigation.openInsights(context),
                     ),
                     const SizedBox(height: AppSpacing.xl),
                   ],
@@ -169,12 +179,6 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
           ],
         );
       },
-    );
-  }
-
-  void _showComingSoon(BuildContext context, String feature) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$feature — coming soon')),
     );
   }
 }
