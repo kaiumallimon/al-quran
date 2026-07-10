@@ -5,6 +5,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../core/widgets/error_state_widget.dart';
 import '../../../core/widgets/skeleton_loader.dart';
 import '../../../data/models/reading_mode.dart';
+import '../../audio/providers/audio_provider.dart';
 import '../../tracking/providers/tracking_provider.dart';
 import '../providers/reading_provider.dart';
 import '../widgets/ayah_card.dart';
@@ -113,9 +114,10 @@ class _ReadingScreenPageState extends State<ReadingScreenPage> {
       (p) => p.preferences.readingMode == ReadingMode.readingFocus,
     );
 
-    return Consumer<ReadingProvider>(
-      builder: (context, provider, _) {
+    return Consumer2<ReadingProvider, AudioProvider>(
+      builder: (context, provider, audio, _) {
         final surahReading = provider.currentSurah;
+        _syncAudioHighlightFromTrack(provider, audio);
 
         if (provider.readingStatus == SurahReadingStatus.loading ||
             surahReading == null) {
@@ -207,7 +209,12 @@ class _ReadingScreenPageState extends State<ReadingScreenPage> {
                           preferences: prefs,
                           surahEnglishName: surah.englishName,
                           isHighlighted:
-                              provider.highlightedAyah == ayah.numberInSurah,
+                              provider.highlightedAyah == ayah.numberInSurah ||
+                                  (audio.currentTrack?.surahNumber ==
+                                          surah.number &&
+                                      audio.currentTrack?.numberInSurah ==
+                                          ayah.numberInSurah &&
+                                      audio.isPlaying),
                           isFocusMode: isFocusMode,
                           onTap: () => provider.setHighlightedAyah(
                             ayah.numberInSurah,
@@ -218,12 +225,32 @@ class _ReadingScreenPageState extends State<ReadingScreenPage> {
                   ),
                 ),
               ),
-              ReadingBottomBar(surahNumber: surah.number),
+              ReadingBottomBar(
+                surahNumber: surah.number,
+                surahEnglishName: surah.englishName,
+              ),
             ],
           ),
         );
       },
     );
+  }
+
+  void _syncAudioHighlightFromTrack(
+    ReadingProvider reading,
+    AudioProvider audio,
+  ) {
+    final track = audio.currentTrack;
+    if (track != null &&
+        track.surahNumber == widget.surahNumber &&
+        audio.isPlaying &&
+        reading.highlightedAyah != track.numberInSurah) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          reading.setHighlightedAyah(track.numberInSurah);
+        }
+      });
+    }
   }
 
   Widget _buildLoading() {

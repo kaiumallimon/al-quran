@@ -6,6 +6,8 @@ import 'package:share_plus/share_plus.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../data/models/ayah_model.dart';
+import '../../../data/models/audio_repeat_mode.dart';
+import '../../audio/providers/audio_provider.dart';
 import '../../tracking/providers/tracking_provider.dart';
 import '../../tracking/widgets/note_editor_sheet.dart';
 import '../../tracking/widgets/reflection_editor_sheet.dart';
@@ -86,16 +88,39 @@ class _VerseActionsSheet extends StatelessWidget {
           _ActionTile(
             icon: Icons.play_circle_outline,
             label: 'Play audio',
-            onTap: () => _closeWithMessage(context, 'Audio player coming soon'),
+            onTap: () => _playAudio(context),
           ),
           _ActionTile(
             icon: Icons.repeat,
             label: 'Repeat verse',
-            onTap: () => _closeWithMessage(context, 'Repeat — audio feature'),
+            onTap: () => _repeatVerse(context),
           ),
           const SizedBox(height: AppSpacing.md),
         ],
       ),
+    );
+  }
+
+  Future<void> _playAudio(BuildContext context) async {
+    final audio = context.read<AudioProvider>();
+    Navigator.pop(context);
+    await audio.playAyah(
+      surahNumber: ayah.surahNumber,
+      numberInSurah: ayah.numberInSurah,
+      globalAyahNumber: ayah.number,
+      surahEnglishName: surahEnglishName,
+    );
+  }
+
+  Future<void> _repeatVerse(BuildContext context) async {
+    final audio = context.read<AudioProvider>();
+    Navigator.pop(context);
+    await audio.setRepeatMode(AudioRepeatMode.ayah);
+    await audio.playAyah(
+      surahNumber: ayah.surahNumber,
+      numberInSurah: ayah.numberInSurah,
+      globalAyahNumber: ayah.number,
+      surahEnglishName: surahEnglishName,
     );
   }
 

@@ -30,3 +30,8 @@ class CacheException extends AppException {
 class StorageException extends AppException {
   const StorageException(super.message, {super.code});
 }
+
+/// Thrown when audio playback or download fails.
+class AudioException extends AppException {
+  const AudioException(super.message, {super.code});
+}

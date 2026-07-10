@@ -1,15 +1,24 @@
+import 'package:audio_service/audio_service.dart';
+
+import '../../data/datasources/local/audio_local_datasource.dart';
+import '../../data/datasources/local/profile_local_datasource.dart';
 import '../../data/datasources/local/hive_local_datasource.dart';
 import '../../data/datasources/local/notification_local_datasource.dart';
 import '../../data/datasources/local/tracking_local_datasource.dart';
+import '../../data/datasources/remote/audio_remote_datasource.dart';
 import '../../data/datasources/remote/quran_api_client.dart';
 import '../../data/datasources/remote/quran_remote_datasource.dart';
+import '../../data/repositories/audio_repository.dart';
 import '../../data/repositories/dashboard_repository.dart';
 import '../../data/repositories/insights_repository.dart';
 import '../../data/repositories/notification_repository.dart';
+import '../../data/repositories/profile_repository.dart';
 import '../../data/repositories/quran_repository.dart';
 import '../../data/repositories/reading_repository.dart';
 import '../../data/repositories/search_repository.dart';
+import '../../data/repositories/settings_repository.dart';
 import '../../data/repositories/tracking_repository.dart';
+import '../services/quran_audio_handler.dart';
 
 /// Central dependency registration for the application.
 class ServiceLocator {
@@ -29,6 +38,13 @@ class ServiceLocator {
   late final InsightsRepository insightsRepository;
   late final NotificationLocalDataSource notificationLocalDataSource;
   late final NotificationRepository notificationRepository;
+  late final AudioLocalDataSource audioLocalDataSource;
+  late final AudioRemoteDataSource audioRemoteDataSource;
+  late final QuranAudioHandler audioHandler;
+  late final AudioRepository audioRepository;
+  late final ProfileLocalDataSource profileLocalDataSource;
+  late final ProfileRepository profileRepository;
+  late final SettingsRepository settingsRepository;
 
   bool _initialized = false;
 
@@ -85,6 +101,39 @@ class ServiceLocator {
       insightsRepository: insightsRepository,
       trackingRepository: trackingRepository,
     );
+
+    audioLocalDataSource = AudioLocalDataSource();
+    await audioLocalDataSource.init();
+
+    audioRemoteDataSource = AudioRemoteDataSource(apiClient);
+
+    audioHandler = await AudioService.init(
+      builder: () => QuranAudioHandler(),
+      config: const AudioServiceConfig(
+        androidNotificationChannelId: 'com.alquran.audio',
+        androidNotificationChannelName: 'Quran Recitation',
+        androidNotificationOngoing: true,
+        androidStopForegroundOnPause: true,
+      ),
+    ) as QuranAudioHandler;
+
+    audioRepository = AudioRepository(
+      local: audioLocalDataSource,
+      remote: audioRemoteDataSource,
+      handler: audioHandler,
+    );
+
+    profileLocalDataSource = ProfileLocalDataSource();
+    await profileLocalDataSource.init();
+
+    profileRepository = ProfileRepository(
+      local: profileLocalDataSource,
+      dashboardRepository: dashboardRepository,
+      trackingRepository: trackingRepository,
+      hiveLocal: localDataSource,
+    );
+
+    settingsRepository = SettingsRepository(local: profileLocalDataSource);
 
     _initialized = true;
   }

@@ -18,4 +18,7 @@ class HiveConstants {
   static const String milestonesBox = 'milestones';
   static const String searchHistoryBox = 'search_history';
   static const String notificationsBox = 'notifications';
+  static const String audioCacheBox = 'audio_cache';
+  static const String profileBox = 'profile';
+  static const String appSettingsBox = 'app_settings';
 }

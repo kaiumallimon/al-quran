@@ -79,4 +79,40 @@ class AppTheme {
           color: AppColors.darkTextSecondary,
         ),
       );
+
+  static ThemeData get amoled => ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: AppColors.amoledBackground,
+        colorScheme: const ColorScheme.dark(
+          primary: AppColors.darkPrimary,
+          onPrimary: Colors.black,
+          secondary: AppColors.darkAccent,
+          surface: AppColors.amoledSurface,
+          onSurface: AppColors.darkTextPrimary,
+          error: AppColors.error,
+        ),
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          backgroundColor: AppColors.amoledBackground,
+          foregroundColor: AppColors.darkTextPrimary,
+          systemOverlayStyle: SystemUiOverlayStyle.light,
+        ),
+        cardTheme: CardThemeData(
+          elevation: 0,
+          color: AppColors.amoledSurface,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+            side: const BorderSide(color: AppColors.amoledDivider),
+          ),
+        ),
+        dividerTheme: const DividerThemeData(
+          color: AppColors.amoledDivider,
+          thickness: 1,
+        ),
+        iconTheme: const IconThemeData(
+          color: AppColors.darkTextSecondary,
+        ),
+      );
 }

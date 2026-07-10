@@ -27,4 +27,9 @@ class AppColors {
   // Shared
   static const Color error = Color(0xFFB00020);
   static const Color success = Color(0xFF2D5A4A);
+
+  // AMOLED theme
+  static const Color amoledBackground = Color(0xFF000000);
+  static const Color amoledSurface = Color(0xFF0A0A0A);
+  static const Color amoledDivider = Color(0xFF1A1A1A);
 }
