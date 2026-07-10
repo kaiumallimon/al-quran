@@ -1,0 +1,58 @@
+import 'package:flutter/material.dart';
+
+import '../theme/app_spacing.dart';
+
+/// Skeleton loading placeholder for cards.
+class SkeletonLoader extends StatefulWidget {
+  const SkeletonLoader({
+    super.key,
+    this.height = 120,
+    this.borderRadius = AppSpacing.radiusMd,
+  });
+
+  final double height;
+  final double borderRadius;
+
+  @override
+  State<SkeletonLoader> createState() => _SkeletonLoaderState();
+}
+
+class _SkeletonLoaderState extends State<SkeletonLoader>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
+    _animation = Tween<double>(begin: 0.3, end: 0.7).animate(_controller);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final baseColor = Theme.of(context).colorScheme.surfaceContainerHighest;
+
+    return AnimatedBuilder(
+      animation: _animation,
+      builder: (context, child) {
+        return Container(
+          height: widget.height,
+          decoration: BoxDecoration(
+            color: baseColor.withValues(alpha: _animation.value),
+            borderRadius: BorderRadius.circular(widget.borderRadius),
+          ),
+        );
+      },
+    );
+  }
+}
