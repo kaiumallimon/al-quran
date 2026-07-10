@@ -31,7 +31,6 @@ class AudioProvider extends ChangeNotifier {
   Duration _position = Duration.zero;
   Duration? _duration;
   bool _isPlaying = false;
-  int? _currentIndex;
   bool _isExpanded = false;
   bool _isBuffering = false;
 
@@ -117,7 +116,6 @@ class AudioProvider extends ChangeNotifier {
     _status = AudioStatus.idle;
     _position = Duration.zero;
     _duration = null;
-    _currentIndex = null;
     _cancelSleepTimer();
     notifyListeners();
   }
@@ -203,7 +201,6 @@ class AudioProvider extends ChangeNotifier {
       _position = position;
       _duration = duration;
       _isPlaying = playing;
-      _currentIndex = index;
 
       if (playing) {
         _status = AudioStatus.playing;

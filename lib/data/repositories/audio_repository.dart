@@ -32,7 +32,7 @@ class AudioRepository {
   Future<void> savePreferences(AudioPreferencesModel prefs) async {
     await _local.savePreferences(prefs);
     await _handler.setSpeed(prefs.playbackSpeed);
-    await _handler.setRepeatMode(prefs.repeatMode);
+    await _handler.setPlaybackRepeatMode(prefs.repeatMode);
   }
 
   List<ReciterModel> getReciters() => ReciterModel.defaults;
@@ -95,7 +95,7 @@ class AudioRepository {
   }
 
   Future<void> setRepeatMode(AudioRepeatMode mode) async {
-    await _handler.setRepeatMode(mode);
+    await _handler.setPlaybackRepeatMode(mode);
     final prefs = await getPreferences();
     await savePreferences(prefs.copyWith(repeatMode: mode));
   }

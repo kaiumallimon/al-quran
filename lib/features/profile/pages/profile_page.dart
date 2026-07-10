@@ -86,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         leading: const Icon(Icons.flag_outlined),
                         title: const Text('Reading goals'),
                         trailing: Text('${stats?.activeGoals ?? 0} active'),
-                        onTap: () => TrackingNavigation.openTrackingHub(context),
+                        onTap: () => TrackingNavigation.openHub(context, initialTab: 3),
                       ),
                       const Divider(height: 1),
                       ListTile(

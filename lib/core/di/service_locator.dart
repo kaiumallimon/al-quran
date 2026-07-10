@@ -107,15 +107,17 @@ class ServiceLocator {
 
     audioRemoteDataSource = AudioRemoteDataSource(apiClient);
 
-    audioHandler = await AudioService.init(
-      builder: () => QuranAudioHandler(),
+    final handler = QuranAudioHandler();
+    await AudioService.init(
+      builder: () => handler,
       config: const AudioServiceConfig(
         androidNotificationChannelId: 'com.alquran.audio',
         androidNotificationChannelName: 'Quran Recitation',
         androidNotificationOngoing: true,
         androidStopForegroundOnPause: true,
       ),
-    ) as QuranAudioHandler;
+    );
+    audioHandler = handler;
 
     audioRepository = AudioRepository(
       local: audioLocalDataSource,

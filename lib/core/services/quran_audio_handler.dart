@@ -61,7 +61,7 @@ class QuranAudioHandler extends BaseAudioHandler
 
   Future<void> setSpeed(double speed) => _player.setSpeed(speed);
 
-  Future<void> setRepeatMode(AudioRepeatMode mode) async {
+  Future<void> setPlaybackRepeatMode(AudioRepeatMode mode) async {
     _repeatMode = mode;
     switch (mode) {
       case AudioRepeatMode.none:
@@ -100,7 +100,7 @@ class QuranAudioHandler extends BaseAudioHandler
 
     _currentIndex = startIndex.clamp(0, tracks.length - 1);
     mediaItem.add(mediaItems[_currentIndex]);
-    await setRepeatMode(_repeatMode);
+    await setPlaybackRepeatMode(_repeatMode);
   }
 
   Future<void> seekToAyah(int index) async {

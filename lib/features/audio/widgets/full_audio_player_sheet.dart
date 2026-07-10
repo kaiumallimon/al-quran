@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
 import '../../../data/models/audio_repeat_mode.dart';
-import '../../../data/models/reciter_model.dart';
 import '../providers/audio_provider.dart';
 import 'reciter_selection_sheet.dart';
 

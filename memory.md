@@ -78,13 +78,22 @@ Track of what has been implemented and what remains. Updated after each feature.
 
 ---
 
-## Feature 3: Audio Player — NOT STARTED
+## Feature 3: Audio Player — DONE
 
-- Mini player
-- Full player
-- Background playback
-- Reciter selection
-- Offline audio cache
+| Component | Status | Notes |
+|-----------|--------|-------|
+| ReciterModel / AudioTrackModel / AudioPreferencesModel | Done | Manual serialization, repeat modes |
+| AudioRemoteDataSource | Done | Surah & ayah audio from alquran.cloud |
+| AudioLocalDataSource | Done | Hive metadata + file cache on disk |
+| AudioRepository | Done | play, pause, seek, reciter, download, cache-first URLs |
+| QuranAudioHandler | Done | just_audio + audio_service background playback |
+| AudioProvider | Done | Loading, playing, paused, error; speed, repeat, sleep timer |
+| MiniAudioPlayer | Done | Above bottom nav in app shell |
+| FullAudioPlayerSheet | Done | Reciter, progress, speed, repeat, sleep timer, download |
+| ReciterSelectionSheet | Done | 6 popular reciters, syncs with reading prefs |
+| Reading integration | Done | Bottom bar, verse actions, ayah highlight sync |
+| Offline audio cache | Done | Download surah audio, clear cache in settings |
+| Android background | Done | Foreground service + notification controls |
 
 ---
 
@@ -165,12 +174,22 @@ Track of what has been implemented and what remains. Updated after each feature.
 
 ---
 
-## Feature 8: Profile & Settings — NOT STARTED
+## Feature 8: Profile & Settings — DONE
 
-- User profile
-- Authentication (Firebase)
-- Appearance, reading, audio settings
-- Privacy & accessibility
+| Component | Status | Notes |
+|-----------|--------|-------|
+| UserProfileModel / AppSettingsModel | Done | Local profile, theme, privacy, accessibility |
+| ProfileLocalDataSource | Done | Hive boxes for profile + settings |
+| ProfileRepository | Done | Profile CRUD, stats aggregation, auth stubs |
+| SettingsRepository | Done | Persist app settings offline |
+| ProfileProvider | Done | Profile, stats, sign-in/out stubs |
+| SettingsProvider | Done | Theme, reading, privacy, accessibility toggles |
+| ProfilePage | Done | Avatar, stats grid, account section, goals link |
+| SettingsPage | Done | Appearance, reading, audio, notifications, storage, privacy, accessibility, about, developer |
+| AMOLED theme | Done | AppTheme.amoled + theme mode selector |
+| Auth stubs | Done | Anonymous, Google, Apple UI — Firebase sync pending |
+| App shell wired | Done | Profile tab replaces placeholder |
+| Offline-first | Done | All settings persist in Hive automatically |
 
 ---
 
@@ -186,8 +205,17 @@ Track of what has been implemented and what remains. Updated after each feature.
 
 ## Next Steps (Priority Order)
 
-1. **Audio Player** — recitation playback, mini/full player
-2. **Profile & Settings** — user preferences and Firebase auth
+1. **Firebase Integration** — Auth, Firestore sync, Crashlytics, Analytics, FCM push
+
+---
+
+## Dependencies Added (Feature 3)
+
+| Package | Purpose |
+|---------|---------|
+| just_audio | Audio playback engine |
+| audio_service | Background playback + lock screen controls |
+| rxdart | Combined playback streams |
 
 ---
 
@@ -198,6 +226,7 @@ Track of what has been implemented and what remains. Updated after each feature.
 | Arabic text | `quran-uthmani` |
 | English translation | `en.sahih` |
 | Bangla | `bn.bengali` |
+| Audio (default reciter) | `ar.alafasy` |
 
 Reference: `api.yaml` (alquran.cloud v1)
 
