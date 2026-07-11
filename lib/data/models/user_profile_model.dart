@@ -1,6 +1,7 @@
 /// Local user profile stored offline-first.
 class UserProfileModel {
   const UserProfileModel({
+    this.uid,
     this.displayName = 'Guest Reader',
     this.email,
     this.photoUrl,
@@ -9,6 +10,7 @@ class UserProfileModel {
     this.preferredLanguage = 'en',
   });
 
+  final String? uid;
   final String displayName;
   final String? email;
   final String? photoUrl;
@@ -16,9 +18,10 @@ class UserProfileModel {
   final DateTime? joinDate;
   final String preferredLanguage;
 
-  bool get isSignedIn => authProvider != AuthProvider.local;
+  bool get isSignedIn => uid != null && authProvider != AuthProvider.local;
 
   UserProfileModel copyWith({
+    String? uid,
     String? displayName,
     String? email,
     String? photoUrl,
@@ -27,6 +30,7 @@ class UserProfileModel {
     String? preferredLanguage,
   }) {
     return UserProfileModel(
+      uid: uid ?? this.uid,
       displayName: displayName ?? this.displayName,
       email: email ?? this.email,
       photoUrl: photoUrl ?? this.photoUrl,
@@ -38,6 +42,7 @@ class UserProfileModel {
 
   factory UserProfileModel.fromMap(Map<dynamic, dynamic> map) {
     return UserProfileModel(
+      uid: map['uid'] as String?,
       displayName: map['displayName'] as String? ?? 'Guest Reader',
       email: map['email'] as String?,
       photoUrl: map['photoUrl'] as String?,
@@ -52,6 +57,7 @@ class UserProfileModel {
   }
 
   Map<String, dynamic> toMap() => {
+        if (uid != null) 'uid': uid,
         'displayName': displayName,
         'email': email,
         'photoUrl': photoUrl,

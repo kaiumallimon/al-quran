@@ -4,34 +4,39 @@ import '../datasources/local/profile_local_datasource.dart';
 import '../models/reading_session_model.dart';
 import '../models/surah_model.dart';
 import '../models/user_profile_model.dart';
+import 'auth_repository.dart';
 import 'dashboard_repository.dart';
+import 'sync_repository.dart';
 import 'tracking_repository.dart';
 
-/// Repository for user profile and aggregated profile statistics.
+/// Repository for user profile, statistics, and account actions.
 class ProfileRepository {
   ProfileRepository({
     required ProfileLocalDataSource local,
     required DashboardRepository dashboardRepository,
     required TrackingRepository trackingRepository,
     required HiveLocalDataSource hiveLocal,
+    required AuthRepository authRepository,
+    required SyncRepository syncRepository,
   })  : _local = local,
         _dashboard = dashboardRepository,
         _tracking = trackingRepository,
-        _hive = hiveLocal;
+        _hive = hiveLocal,
+        _auth = authRepository,
+        _sync = syncRepository;
 
   final ProfileLocalDataSource _local;
   final DashboardRepository _dashboard;
   final TrackingRepository _tracking;
   final HiveLocalDataSource _hive;
+  final AuthRepository _auth;
+  final SyncRepository _sync;
 
   Future<UserProfileModel> getProfile() async {
-    final profile = await _local.getProfile();
-    if (profile.joinDate == null) {
-      final updated = profile.copyWith(joinDate: DateTime.now());
-      await saveProfile(updated);
-      return updated;
+    if (_auth.isSignedIn) {
+      return _auth.refreshProfileFromAuth();
     }
-    return profile;
+    return _local.getProfile();
   }
 
   Future<void> saveProfile(UserProfileModel profile) {
@@ -56,40 +61,50 @@ class ProfileRepository {
   }
 
   Future<UserProfileModel> signInAnonymously() async {
-    final profile = UserProfileModel(
-      displayName: 'Guest Reader',
-      authProvider: AuthProvider.anonymous,
-      joinDate: DateTime.now(),
-    );
-    await saveProfile(profile);
+    final profile = await _auth.signInAnonymously();
+    await _syncAfterSignIn();
     return profile;
   }
 
   Future<UserProfileModel> signInWithGoogle() async {
-    final profile = UserProfileModel(
-      displayName: 'Google User',
-      email: 'user@gmail.com',
-      authProvider: AuthProvider.google,
-      joinDate: DateTime.now(),
-    );
-    await saveProfile(profile);
+    final profile = await _auth.signInWithGoogle();
+    await _syncAfterSignIn();
     return profile;
   }
 
   Future<UserProfileModel> signInWithApple() async {
-    final profile = UserProfileModel(
-      displayName: 'Apple User',
-      authProvider: AuthProvider.apple,
-      joinDate: DateTime.now(),
-    );
-    await saveProfile(profile);
+    final profile = await _auth.signInWithApple();
+    await _syncAfterSignIn();
     return profile;
   }
 
-  Future<void> signOut() async {
-    await saveProfile(
-      UserProfileModel(joinDate: DateTime.now()),
-    );
+  Future<UserProfileModel> signOut() async {
+    return _auth.signOut();
+  }
+
+  Future<void> syncNow() async {
+    final uid = _auth.currentUid;
+    if (uid == null) return;
+
+    final settings = await _local.getSettings();
+    await _sync.syncAll(uid: uid, syncEnabled: settings.syncEnabled);
+  }
+
+  DateTime? get lastSyncedAt => _sync.lastSyncedAt;
+  bool get isSyncing => _sync.isSyncing;
+
+  Future<void> _syncAfterSignIn() async {
+    final uid = _auth.currentUid;
+    if (uid == null) return;
+
+    final settings = await _local.getSettings();
+    if (!settings.syncEnabled) return;
+
+    try {
+      await _sync.syncAll(uid: uid, syncEnabled: true);
+    } catch (_) {
+      // Local data remains authoritative; sync retries later.
+    }
   }
 
   Future<int> _countCompletedSurahs(List<SurahModel> surahs) async {

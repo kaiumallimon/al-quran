@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../home/pages/home_dashboard_page.dart';
+import '../../../core/di/service_locator.dart';
 import '../../notifications/providers/notification_provider.dart';
 import '../../profile/pages/profile_page.dart';
 import '../../reading/pages/surah_list_page.dart';
@@ -44,6 +45,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       context.read<NotificationProvider>().loadNotifications();
+      ServiceLocator.instance.syncCoordinator.scheduleSync();
     }
   }
 

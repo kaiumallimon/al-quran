@@ -223,9 +223,16 @@ class _SettingsPageState extends State<SettingsPage> {
                   SwitchListTile(
                     secondary: const Icon(Icons.cloud_sync_outlined),
                     title: const Text('Cloud sync'),
-                    subtitle: const Text('Requires Firebase sign-in'),
+                    subtitle: const Text('Back up bookmarks, notes, and progress'),
                     value: appSettings.syncEnabled,
-                    onChanged: settings.toggleSync,
+                    onChanged: (value) async {
+                      final message = await settings.toggleSync(value);
+                      if (message != null && context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(message)),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),

@@ -64,6 +64,8 @@ class QuranCompanionApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => SettingsProvider(
             repository: locator.settingsRepository,
+            authRepository: locator.authRepository,
+            syncCoordinator: locator.syncCoordinator,
           )..loadSettings(),
         ),
         ChangeNotifierProvider(

@@ -65,10 +65,34 @@ class _ProfilePageState extends State<ProfilePage> {
           final stats = provider.stats;
 
           return RefreshIndicator(
-            onRefresh: provider.loadProfile,
+            onRefresh: () async {
+              if (profile.isSignedIn) {
+                await provider.syncNow();
+              } else {
+                await provider.loadProfile();
+              }
+            },
             child: ListView(
               padding: const EdgeInsets.all(AppSpacing.md),
               children: [
+                if (provider.errorMessage != null &&
+                    provider.status != ProfileStatus.error)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+                    child: MaterialBanner(
+                      content: Text(provider.errorMessage!),
+                      leading: const Icon(Icons.info_outline),
+                      actions: [
+                        TextButton(
+                          onPressed: provider.loadProfile,
+                          child: const Text('Dismiss'),
+                        ),
+                      ],
+                    ),
+                  ),
+                if (profile.isSignedIn)
+                  _SyncStatusCard(provider: provider),
+                if (profile.isSignedIn) const SizedBox(height: AppSpacing.md),
                 _ProfileHeader(profile: profile),
                 const SizedBox(height: AppSpacing.lg),
                 if (stats != null) _StatsGrid(stats: stats),
@@ -117,6 +141,64 @@ class _ProfilePageState extends State<ProfilePage> {
         SkeletonLoader(height: 100),
       ],
     );
+  }
+}
+
+class _SyncStatusCard extends StatelessWidget {
+  const _SyncStatusCard({required this.provider});
+
+  final ProfileProvider provider;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final syncing = provider.isSyncing || provider.status == ProfileStatus.syncing;
+    final lastSynced = provider.lastSyncedAt;
+
+    return AppCard(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Row(
+        children: [
+          Icon(
+            syncing ? Icons.cloud_sync : Icons.cloud_done_outlined,
+            color: colorScheme.primary,
+          ),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  syncing ? 'Syncing with cloud…' : 'Cloud sync enabled',
+                  style: AppTypography.subtitle(context),
+                ),
+                if (lastSynced != null)
+                  Text(
+                    'Last synced ${_formatSyncTime(lastSynced)}',
+                    style: AppTypography.small(context).copyWith(
+                      color: colorScheme.onSurface.withValues(alpha: 0.6),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (!syncing)
+            IconButton(
+              tooltip: 'Sync now',
+              onPressed: provider.syncNow,
+              icon: const Icon(Icons.refresh),
+            ),
+        ],
+      ),
+    );
+  }
+
+  String _formatSyncTime(DateTime time) {
+    final diff = DateTime.now().difference(time);
+    if (diff.inMinutes < 1) return 'just now';
+    if (diff.inHours < 1) return '${diff.inMinutes}m ago';
+    if (diff.inDays < 1) return '${diff.inHours}h ago';
+    return '${diff.inDays}d ago';
   }
 }
 
@@ -252,6 +334,8 @@ class _AccountSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final signingIn = provider.status == ProfileStatus.signingIn;
+
     return AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -260,22 +344,27 @@ class _AccountSection extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.md),
             child: Text('Account', style: AppTypography.subtitle(context)),
           ),
-          if (!profile.isSignedIn) ...[
+          if (signingIn)
+            const Padding(
+              padding: EdgeInsets.all(AppSpacing.md),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (!profile.isSignedIn) ...[
             ListTile(
               leading: const Icon(Icons.person_outline),
               title: const Text('Continue as guest'),
+              subtitle: const Text('Anonymous account with cloud backup'),
               onTap: provider.signInAnonymously,
             ),
             ListTile(
               leading: const Icon(Icons.g_mobiledata),
               title: const Text('Sign in with Google'),
-              subtitle: const Text('Firebase sync coming soon'),
               onTap: provider.signInWithGoogle,
             ),
             ListTile(
               leading: const Icon(Icons.apple),
               title: const Text('Sign in with Apple'),
-              subtitle: const Text('Firebase sync coming soon'),
+              subtitle: const Text('Available on Apple devices'),
               onTap: provider.signInWithApple,
             ),
           ] else

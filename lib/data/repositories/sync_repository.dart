@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import '../../core/constants/firestore_constants.dart';
 import '../../core/exceptions/app_exceptions.dart';
 import '../datasources/local/hive_local_datasource.dart';
@@ -196,22 +198,20 @@ class SyncRepository {
       toMap: (value) => value.toMap(),
     );
 
-    await _mergeSingleDocument<ReadingProgressModel>(
-      uid: uid,
-      docId: FirestoreConstants.readingProgressDoc,
-      readLocal: () async =>
-          (await _hiveLocal.getReadingProgress()) ??
-          ReadingProgressModel(
-            surahNumber: 1,
-            ayahNumber: 1,
-            page: 1,
-            lastReadAt: DateTime.fromMillisecondsSinceEpoch(0),
-          ),
-      saveLocal: _hiveLocal.saveReadingProgress,
-      fromMap: ReadingProgressModel.fromMap,
-      toMap: (value) => value.toMap(),
-      optional: true,
-    );
+    final progress = await _hiveLocal.getReadingProgress();
+    if (progress != null) {
+      await _mergeReadingProgress(uid, progress);
+    } else {
+      final remoteProgress = await _remote.getDocument(
+        uid: uid,
+        docId: FirestoreConstants.readingProgressDoc,
+      );
+      if (remoteProgress != null) {
+        await _hiveLocal.saveReadingProgress(
+          ReadingProgressModel.fromMap(remoteProgress),
+        );
+      }
+    }
 
     await _mergeSingleDocument<StreakModel>(
       uid: uid,
@@ -296,16 +296,52 @@ class SyncRepository {
       collection: FirestoreConstants.scrollPositionsCollection,
     );
     final localScroll = await _hiveLocal.getAllScrollPositions();
+    final lastSynced =
+        _syncLocal.lastSyncedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+
     for (final entry in remoteScroll.entries) {
       final surahNumber = entry.value['surahNumber'] as int?;
       final ayahNumber = entry.value['ayahNumber'] as int?;
       if (surahNumber == null || ayahNumber == null) continue;
 
       final remoteUpdated = _recordUpdatedAt(entry.value);
-      final localAyah = localScroll[surahNumber];
-      if (localAyah == null || remoteUpdated.isAfter(DateTime.now())) {
+      final hasLocal = localScroll.containsKey(surahNumber);
+      if (!hasLocal || remoteUpdated.isAfter(lastSynced)) {
         await _hiveLocal.saveScrollAyah(surahNumber, ayahNumber);
       }
+    }
+  }
+
+  Future<void> _mergeReadingProgress(
+    String uid,
+    ReadingProgressModel local,
+  ) async {
+    final remoteMap = await _remote.getDocument(
+      uid: uid,
+      docId: FirestoreConstants.readingProgressDoc,
+    );
+
+    if (remoteMap == null) {
+      await _remote.setDocument(
+        uid: uid,
+        docId: FirestoreConstants.readingProgressDoc,
+        data: local.toMap(),
+      );
+      return;
+    }
+
+    final remoteUpdated = _recordUpdatedAt(remoteMap);
+    final localUpdated = _recordUpdatedAt(local.toMap());
+    if (remoteUpdated.isAfter(localUpdated)) {
+      await _hiveLocal.saveReadingProgress(
+        ReadingProgressModel.fromMap(remoteMap),
+      );
+    } else if (localUpdated.isAfter(remoteUpdated)) {
+      await _remote.setDocument(
+        uid: uid,
+        docId: FirestoreConstants.readingProgressDoc,
+        data: local.toMap(),
+      );
     }
   }
 
@@ -333,17 +369,14 @@ class SyncRepository {
     required Future<void> Function(T value) saveLocal,
     required T Function(Map<dynamic, dynamic> map) fromMap,
     required Map<String, dynamic> Function(T value) toMap,
-    bool optional = false,
   }) async {
     final remoteMap = await _remote.getDocument(uid: uid, docId: docId);
     if (remoteMap == null) {
-      if (!optional) {
-        await _remote.setDocument(
-          uid: uid,
-          docId: docId,
-          data: toMap(await readLocal()),
-        );
-      }
+      await _remote.setDocument(
+        uid: uid,
+        docId: docId,
+        data: toMap(await readLocal()),
+      );
       return;
     }
 
@@ -366,7 +399,7 @@ class SyncRepository {
     }
   }
 
-  Future<void> _mergeCollection<T>({
+  Future<void> _mergeCollection<T extends Object>({
     required String uid,
     required String collection,
     required Future<List<T>> Function() loadLocal,
@@ -445,18 +478,13 @@ class SyncRepository {
     ]) {
       final value = map[key];
       if (value is String) {
-        return DateTime.tryParse(value) ?? DateTime.fromMillisecondsSinceEpoch(0);
+        return DateTime.tryParse(value) ??
+            DateTime.fromMillisecondsSinceEpoch(0);
       }
-      if (value is TimestampLike) {
+      if (value is Timestamp) {
         return value.toDate();
       }
     }
     return DateTime.fromMillisecondsSinceEpoch(0);
   }
-}
-
-/// Minimal interface for Firestore timestamp values without importing
-/// cloud_firestore into model layers.
-abstract class TimestampLike {
-  DateTime toDate();
 }

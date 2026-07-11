@@ -1,14 +1,19 @@
 import 'package:audio_service/audio_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import '../../data/datasources/local/audio_local_datasource.dart';
 import '../../data/datasources/local/profile_local_datasource.dart';
 import '../../data/datasources/local/hive_local_datasource.dart';
 import '../../data/datasources/local/notification_local_datasource.dart';
+import '../../data/datasources/local/sync_local_datasource.dart';
 import '../../data/datasources/local/tracking_local_datasource.dart';
 import '../../data/datasources/remote/audio_remote_datasource.dart';
+import '../../data/datasources/remote/firebase_auth_datasource.dart';
+import '../../data/datasources/remote/firestore_sync_datasource.dart';
 import '../../data/datasources/remote/quran_api_client.dart';
 import '../../data/datasources/remote/quran_remote_datasource.dart';
 import '../../data/repositories/audio_repository.dart';
+import '../../data/repositories/auth_repository.dart';
 import '../../data/repositories/dashboard_repository.dart';
 import '../../data/repositories/insights_repository.dart';
 import '../../data/repositories/notification_repository.dart';
@@ -17,8 +22,11 @@ import '../../data/repositories/quran_repository.dart';
 import '../../data/repositories/reading_repository.dart';
 import '../../data/repositories/search_repository.dart';
 import '../../data/repositories/settings_repository.dart';
+import '../../data/repositories/sync_repository.dart';
 import '../../data/repositories/tracking_repository.dart';
+import '../../firebase_options.dart';
 import '../services/quran_audio_handler.dart';
+import '../services/sync_coordinator.dart';
 
 /// Central dependency registration for the application.
 class ServiceLocator {
@@ -43,6 +51,12 @@ class ServiceLocator {
   late final QuranAudioHandler audioHandler;
   late final AudioRepository audioRepository;
   late final ProfileLocalDataSource profileLocalDataSource;
+  late final SyncLocalDataSource syncLocalDataSource;
+  late final FirebaseAuthDataSource firebaseAuthDataSource;
+  late final FirestoreSyncDataSource firestoreSyncDataSource;
+  late final AuthRepository authRepository;
+  late final SyncRepository syncRepository;
+  late final SyncCoordinator syncCoordinator;
   late final ProfileRepository profileRepository;
   late final SettingsRepository settingsRepository;
 
@@ -50,6 +64,10 @@ class ServiceLocator {
 
   Future<void> init() async {
     if (_initialized) return;
+
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
     localDataSource = HiveLocalDataSource();
     await localDataSource.init();
@@ -128,11 +146,40 @@ class ServiceLocator {
     profileLocalDataSource = ProfileLocalDataSource();
     await profileLocalDataSource.init();
 
+    syncLocalDataSource = SyncLocalDataSource();
+    await syncLocalDataSource.init();
+
+    firebaseAuthDataSource = FirebaseAuthDataSource();
+    firestoreSyncDataSource = FirestoreSyncDataSource();
+
+    authRepository = AuthRepository(
+      remote: firebaseAuthDataSource,
+      local: profileLocalDataSource,
+    );
+
+    syncRepository = SyncRepository(
+      remote: firestoreSyncDataSource,
+      syncLocal: syncLocalDataSource,
+      profileLocal: profileLocalDataSource,
+      trackingLocal: trackingLocalDataSource,
+      hiveLocal: localDataSource,
+    );
+
+    syncCoordinator = SyncCoordinator(
+      authRepository: authRepository,
+      syncRepository: syncRepository,
+      profileLocal: profileLocalDataSource,
+    );
+    syncCoordinator.start();
+    syncCoordinator.scheduleSync();
+
     profileRepository = ProfileRepository(
       local: profileLocalDataSource,
       dashboardRepository: dashboardRepository,
       trackingRepository: trackingRepository,
       hiveLocal: localDataSource,
+      authRepository: authRepository,
+      syncRepository: syncRepository,
     );
 
     settingsRepository = SettingsRepository(local: profileLocalDataSource);
@@ -141,6 +188,7 @@ class ServiceLocator {
   }
 
   void dispose() {
+    syncCoordinator.dispose();
     apiClient.dispose();
   }
 }
