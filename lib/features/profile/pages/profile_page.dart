@@ -47,25 +47,21 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       body: Consumer<ProfileProvider>(
         builder: (context, provider, _) {
-          if (provider.status == ProfileStatus.loading &&
-              provider.profile == null) {
+          final profile = provider.profile;
+          if (profile == null) {
+            if (provider.status == ProfileStatus.error) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSpacing.lg),
+                  child: ErrorStateWidget(
+                    message: provider.errorMessage ?? 'Unable to load profile',
+                    onRetry: provider.loadProfile,
+                  ),
+                ),
+              );
+            }
             return _buildLoading();
           }
-
-          if (provider.status == ProfileStatus.error &&
-              provider.profile == null) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.lg),
-                child: ErrorStateWidget(
-                  message: provider.errorMessage ?? 'Unable to load profile',
-                  onRetry: provider.loadProfile,
-                ),
-              ),
-            );
-          }
-
-          final profile = provider.profile!;
           final stats = provider.stats;
 
           return RefreshIndicator(
