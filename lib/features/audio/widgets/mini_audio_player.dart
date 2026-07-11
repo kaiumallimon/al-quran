@@ -22,76 +22,81 @@ class MiniAudioPlayer extends StatelessWidget {
         return Material(
           elevation: 6,
           color: colorScheme.surface,
-          child: InkWell(
-            onTap: () => showFullAudioPlayerSheet(context),
-            child: SafeArea(
-              top: false,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  LinearProgressIndicator(
-                    value: audio.progress.clamp(0, 1),
-                    minHeight: 2,
-                    backgroundColor: colorScheme.surfaceContainerHighest,
+          child: SafeArea(
+            top: false,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                LinearProgressIndicator(
+                  value: audio.progress.clamp(0, 1),
+                  minHeight: 2,
+                  backgroundColor: colorScheme.surfaceContainerHighest,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.sm,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.sm,
-                      vertical: AppSpacing.sm,
-                    ),
-                    child: Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            audio.isPlaying ? Icons.pause : Icons.play_arrow,
-                          ),
-                          onPressed: audio.togglePlayPause,
-                          tooltip: audio.isPlaying ? 'Pause' : 'Play',
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          audio.isPlaying ? Icons.pause : Icons.play_arrow,
                         ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                track.surahEnglishName,
-                                style: AppTypography.body(context).copyWith(
-                                  fontWeight: FontWeight.w600,
+                        onPressed: audio.togglePlayPause,
+                        tooltip: audio.isPlaying ? 'Pause' : 'Play',
+                      ),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () => showFullAudioPlayerSheet(context),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: AppSpacing.xs,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  track.surahEnglishName,
+                                  style: AppTypography.body(context).copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              Text(
-                                'Ayah ${track.numberInSurah}',
-                                style: AppTypography.small(context).copyWith(
-                                  color: colorScheme.onSurface
-                                      .withValues(alpha: 0.6),
+                                Text(
+                                  'Ayah ${track.numberInSurah}',
+                                  style: AppTypography.small(context).copyWith(
+                                    color: colorScheme.onSurface
+                                        .withValues(alpha: 0.6),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                        if (audio.isBuffering)
-                          const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        IconButton(
-                          icon: const Icon(Icons.keyboard_arrow_up),
-                          onPressed: () => showFullAudioPlayerSheet(context),
-                          tooltip: 'Expand player',
+                      ),
+                      if (audio.isBuffering)
+                        const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: audio.stop,
-                          tooltip: 'Stop',
-                        ),
-                      ],
-                    ),
+                      IconButton(
+                        icon: const Icon(Icons.keyboard_arrow_up),
+                        onPressed: () => showFullAudioPlayerSheet(context),
+                        tooltip: 'Expand player',
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => audio.stop(),
+                        tooltip: 'Stop',
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         );

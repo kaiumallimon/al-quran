@@ -40,6 +40,32 @@ class AuthRepository {
     return profile;
   }
 
+  Future<UserProfileModel> signInWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {
+    final profile = await _remote.signInWithEmailPassword(
+      email: email,
+      password: password,
+    );
+    await _local.saveProfile(profile);
+    return profile;
+  }
+
+  Future<UserProfileModel> registerWithEmailPassword({
+    required String email,
+    required String password,
+    String? displayName,
+  }) async {
+    final profile = await _remote.registerWithEmailPassword(
+      email: email,
+      password: password,
+      displayName: displayName,
+    );
+    await _local.saveProfile(profile);
+    return profile;
+  }
+
   Future<UserProfileModel> signOut() async {
     await _remote.signOut();
     final localProfile = UserProfileModel(joinDate: DateTime.now());

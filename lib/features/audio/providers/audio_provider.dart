@@ -204,7 +204,9 @@ class AudioProvider extends ChangeNotifier {
 
       if (playing) {
         _status = AudioStatus.playing;
-      } else if (_handler.currentTrack != null && _status != AudioStatus.loading) {
+      } else if (_handler.currentTrack != null &&
+          _status != AudioStatus.loading &&
+          _status != AudioStatus.idle) {
         _status = AudioStatus.paused;
       }
 

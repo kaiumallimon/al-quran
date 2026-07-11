@@ -70,6 +70,7 @@ class UserProfileModel {
 enum AuthProvider {
   local,
   anonymous,
+  email,
   google,
   apple;
 
@@ -79,6 +80,8 @@ enum AuthProvider {
         return 'Local';
       case AuthProvider.anonymous:
         return 'Anonymous';
+      case AuthProvider.email:
+        return 'Email';
       case AuthProvider.google:
         return 'Google';
       case AuthProvider.apple:

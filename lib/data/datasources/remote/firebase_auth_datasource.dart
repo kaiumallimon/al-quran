@@ -70,6 +70,79 @@ class FirebaseAuthDataSource {
     }
   }
 
+  Future<UserProfileModel> signInWithEmailPassword({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final result = await _auth.signInWithEmailAndPassword(
+        email: email.trim(),
+        password: password,
+      );
+      return _profileFromUser(result.user, AuthProvider.email);
+    } on FirebaseAuthException catch (error) {
+      throw AuthenticationException(
+        _messageForAuthError(error),
+        code: error.code,
+      );
+    }
+  }
+
+  Future<UserProfileModel> registerWithEmailPassword({
+    required String email,
+    required String password,
+    String? displayName,
+  }) async {
+    try {
+      final trimmedEmail = email.trim();
+      final current = _auth.currentUser;
+
+      if (current != null && current.isAnonymous) {
+        final credential = EmailAuthProvider.credential(
+          email: trimmedEmail,
+          password: password,
+        );
+        final result = await current.linkWithCredential(credential);
+        final user = result.user;
+        if (user == null) {
+          throw const AuthenticationException(
+            'Registration did not return a user.',
+          );
+        }
+
+        if (displayName?.trim().isNotEmpty == true) {
+          await user.updateDisplayName(displayName!.trim());
+          await user.reload();
+        }
+
+        return _profileFromUser(_auth.currentUser, AuthProvider.email);
+      }
+
+      final result = await _auth.createUserWithEmailAndPassword(
+        email: trimmedEmail,
+        password: password,
+      );
+      final user = result.user;
+      if (user == null) {
+        throw const AuthenticationException(
+          'Registration did not return a user.',
+        );
+      }
+
+      if (displayName?.trim().isNotEmpty == true) {
+        await user.updateDisplayName(displayName!.trim());
+        await user.reload();
+      }
+
+      return _profileFromUser(_auth.currentUser, AuthProvider.email);
+    } on FirebaseAuthException catch (error) {
+      throw AuthenticationException(
+        _messageForAuthError(error),
+        code: error.code,
+      );
+    }
+  }
+
   Future<UserProfileModel> signInWithApple() async {
     if (defaultTargetPlatform != TargetPlatform.iOS &&
         defaultTargetPlatform != TargetPlatform.macOS) {
@@ -172,6 +245,8 @@ class FirebaseAuthDataSource {
   AuthProvider _providerForUser(User user) {
     for (final info in user.providerData) {
       switch (info.providerId) {
+        case 'password':
+          return AuthProvider.email;
         case 'google.com':
           return AuthProvider.google;
         case 'apple.com':
@@ -184,6 +259,8 @@ class FirebaseAuthDataSource {
 
   String _defaultName(AuthProvider provider) {
     switch (provider) {
+      case AuthProvider.email:
+        return 'Reader';
       case AuthProvider.google:
         return 'Google User';
       case AuthProvider.apple:
@@ -197,6 +274,18 @@ class FirebaseAuthDataSource {
 
   String _messageForAuthError(FirebaseAuthException error) {
     switch (error.code) {
+      case 'invalid-email':
+        return 'Enter a valid email address.';
+      case 'user-not-found':
+      case 'wrong-password':
+      case 'invalid-credential':
+        return 'Incorrect email or password.';
+      case 'email-already-in-use':
+        return 'An account with this email already exists.';
+      case 'weak-password':
+        return 'Password must be at least 6 characters.';
+      case 'operation-not-allowed':
+        return 'Email sign-in is not enabled for this app.';
       case 'network-request-failed':
         return 'Unable to connect. Check your internet connection.';
       case 'user-disabled':

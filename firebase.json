@@ -1,1 +1,25 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"al-quran-f9fc5","appId":"1:438868741822:android:129b0cf63ec223c72758ef","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"al-quran-f9fc5","configurations":{"android":"1:438868741822:android:129b0cf63ec223c72758ef","ios":"1:438868741822:ios:58d4ec5f6c47195b2758ef","macos":"1:438868741822:ios:58d4ec5f6c47195b2758ef","web":"1:438868741822:web:63e83125cd18dac62758ef","windows":"1:438868741822:web:67c4c5cf8a76863c2758ef"}}}}}}
+{
+    "flutter": {
+        "platforms": {
+            "android": {
+                "default": {
+                    "projectId": "al-quran-f9fc5",
+                    "appId": "1:438868741822:android:129b0cf63ec223c72758ef",
+                    "fileOutput": "android/app/google-services.json"
+                }
+            },
+            "dart": {
+                "lib/firebase_options.dart": {
+                    "projectId": "al-quran-f9fc5",
+                    "configurations": {
+                        "android": "1:438868741822:android:129b0cf63ec223c72758ef",
+                        "ios": "1:438868741822:ios:58d4ec5f6c47195b2758ef",
+                        "macos": "1:438868741822:ios:58d4ec5f6c47195b2758ef",
+                        "web": "1:438868741822:web:63e83125cd18dac62758ef",
+                        "windows": "1:438868741822:web:67c4c5cf8a76863c2758ef"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -5,6 +5,8 @@ import 'core/di/service_locator.dart';
 import 'core/theme/app_theme.dart';
 import 'data/models/app_settings_model.dart';
 import 'features/audio/providers/audio_provider.dart';
+import 'features/authentication/pages/auth_gate.dart';
+import 'features/authentication/providers/auth_provider.dart';
 import 'features/home/providers/dashboard_provider.dart';
 import 'features/insights/providers/insights_provider.dart';
 import 'features/notifications/providers/notification_provider.dart';
@@ -12,7 +14,6 @@ import 'features/profile/providers/profile_provider.dart';
 import 'features/profile/providers/settings_provider.dart';
 import 'features/reading/providers/reading_provider.dart';
 import 'features/search/providers/search_provider.dart';
-import 'features/shell/pages/app_shell.dart';
 import 'features/shell/providers/app_shell_provider.dart';
 import 'features/tracking/providers/tracking_provider.dart';
 
@@ -45,6 +46,12 @@ class QuranCompanionApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => AppShellProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(
+            authRepository: locator.authRepository,
+            syncCoordinator: locator.syncCoordinator,
+          ),
         ),
         ChangeNotifierProvider(
           create: (_) => NotificationProvider(
@@ -92,7 +99,7 @@ class QuranCompanionApp extends StatelessWidget {
             theme: AppTheme.light,
             darkTheme: darkTheme,
             themeMode: themeMode,
-            home: const AppShell(),
+            home: const AuthGate(),
           );
         },
       ),

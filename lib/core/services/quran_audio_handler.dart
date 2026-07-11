@@ -113,6 +113,9 @@ class QuranAudioHandler extends BaseAudioHandler
 
   Future<void> stopPlayback() async {
     await _player.stop();
+    _tracks.clear();
+    _currentIndex = 0;
+    queue.add([]);
     await super.stop();
   }
 
