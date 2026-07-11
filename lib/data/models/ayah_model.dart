@@ -12,7 +12,7 @@ class AyahModel {
     this.hizbQuarter,
     this.sajda = false,
     this.englishText,
-    this.banglaTransliteration,
+    this.transliteration,
     this.banglaTranslation,
   });
 
@@ -27,7 +27,8 @@ class AyahModel {
   final int? hizbQuarter;
   final bool sajda;
   final String? englishText;
-  final String? banglaTransliteration;
+  /// Pronunciation from alquran.cloud `en.transliteration`.
+  final String? transliteration;
   final String? banglaTranslation;
 
   factory AyahModel.fromJson(
@@ -62,8 +63,7 @@ class AyahModel {
         if (hizbQuarter != null) 'hizbQuarter': hizbQuarter,
         'sajda': sajda,
         if (englishText != null) 'englishText': englishText,
-        if (banglaTransliteration != null)
-          'banglaTransliteration': banglaTransliteration,
+        if (transliteration != null) 'transliteration': transliteration,
         if (banglaTranslation != null)
           'banglaTranslation': banglaTranslation,
       };
@@ -81,7 +81,8 @@ class AyahModel {
       hizbQuarter: map['hizbQuarter'] as int?,
       sajda: map['sajda'] as bool? ?? false,
       englishText: map['englishText'] as String?,
-      banglaTransliteration: map['banglaTransliteration'] as String?,
+      transliteration: map['transliteration'] as String? ??
+          map['banglaTransliteration'] as String?,
       banglaTranslation: map['banglaTranslation'] as String?,
     );
   }
@@ -90,7 +91,7 @@ class AyahModel {
 
   AyahModel copyWith({
     String? englishText,
-    String? banglaTransliteration,
+    String? transliteration,
     String? banglaTranslation,
   }) {
     return AyahModel(
@@ -105,8 +106,7 @@ class AyahModel {
       hizbQuarter: hizbQuarter,
       sajda: sajda,
       englishText: englishText ?? this.englishText,
-      banglaTransliteration:
-          banglaTransliteration ?? this.banglaTransliteration,
+      transliteration: transliteration ?? this.transliteration,
       banglaTranslation: banglaTranslation ?? this.banglaTranslation,
     );
   }

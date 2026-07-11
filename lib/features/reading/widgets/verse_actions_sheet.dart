@@ -178,8 +178,8 @@ class _VerseActionsSheet extends StatelessWidget {
       buffer.writeln(ayah.englishText);
       buffer.writeln();
     }
-    if (ayah.banglaTransliteration != null) {
-      buffer.writeln(ayah.banglaTransliteration);
+    if (ayah.transliteration != null) {
+      buffer.writeln(ayah.transliteration);
       buffer.writeln();
     }
     if (ayah.banglaTranslation != null) {

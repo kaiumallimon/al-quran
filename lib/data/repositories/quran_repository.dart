@@ -94,7 +94,7 @@ class QuranRepository {
     final cached = await _local.getAyah(ayahNumber);
     if (cached != null &&
         cached.englishText != null &&
-        cached.banglaTransliteration != null &&
+        cached.transliteration != null &&
         cached.banglaTranslation != null &&
         cached.text.isNotEmpty) {
       _refreshAyahInBackground(ayahNumber);
@@ -137,7 +137,7 @@ class QuranRepository {
       final cachedAyahs = await _local.getSurahAyahs(surahNumber);
       final hasTranslations = cachedAyahs.isNotEmpty &&
           cachedAyahs.first.englishText != null &&
-          cachedAyahs.first.banglaTransliteration != null &&
+          cachedAyahs.first.transliteration != null &&
           cachedAyahs.first.banglaTranslation != null;
       if (cachedAyahs.isNotEmpty && hasTranslations) {
         _refreshSurahWithTranslationsInBackground(surahNumber);

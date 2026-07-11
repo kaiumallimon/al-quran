@@ -146,7 +146,7 @@ class QuranRemoteDataSource {
   }) {
     if (editionType == 'transliteration' ||
         editionId == ApiConstants.editionTransliteration) {
-      return ayah.copyWith(banglaTransliteration: text);
+      return ayah.copyWith(transliteration: text);
     }
     if (editionId.startsWith('en.')) {
       return ayah.copyWith(englishText: text);

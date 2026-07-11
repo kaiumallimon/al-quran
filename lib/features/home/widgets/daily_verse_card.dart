@@ -66,10 +66,10 @@ class DailyVerseCard extends StatelessWidget {
               ),
             ),
           ],
-          if (ayah.banglaTransliteration != null) ...[
+          if (ayah.transliteration != null) ...[
             const SizedBox(height: AppSpacing.sm),
             Text(
-              ayah.banglaTransliteration!,
+              ayah.transliteration!,
               style: AppTypography.body(context).copyWith(
                 fontSize: 14,
                 fontStyle: FontStyle.italic,

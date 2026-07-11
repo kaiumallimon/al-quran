@@ -133,10 +133,10 @@ class AyahCard extends StatelessWidget {
                   ),
                 ],
                 if (preferences.showTransliterationText &&
-                    ayah.banglaTransliteration != null) ...[
+                    ayah.transliteration != null) ...[
                   const SizedBox(height: AppSpacing.sm),
                   Text(
-                    ayah.banglaTransliteration!,
+                    ayah.transliteration!,
                     style: AppTypography.body(context).copyWith(
                       fontSize: preferences.translationFontSize - 1,
                       height: preferences.lineHeight,

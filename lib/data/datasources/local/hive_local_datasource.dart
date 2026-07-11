@@ -346,7 +346,7 @@ class HiveLocalDataSource {
     if (ayah.englishText?.toLowerCase().contains(query) ?? false) {
       return 'english';
     }
-    if (ayah.banglaTransliteration?.toLowerCase().contains(query) ?? false) {
+    if (ayah.transliteration?.toLowerCase().contains(query) ?? false) {
       return 'bangla';
     }
     if (ayah.banglaTranslation?.toLowerCase().contains(query) ?? false) {
@@ -362,7 +362,7 @@ class HiveLocalDataSource {
       case 'english':
         return ayah.englishText ?? ayah.text;
       case 'bangla':
-        return ayah.banglaTransliteration ?? ayah.banglaTranslation ?? '';
+        return ayah.transliteration ?? ayah.banglaTranslation ?? '';
       default:
         return ayah.text;
     }

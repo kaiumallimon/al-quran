@@ -55,7 +55,7 @@ class _TranslationDisplaySheet extends StatelessWidget {
         ),
         _LayerSwitch(
           title: 'Transliteration',
-          subtitle: 'Pronunciation / spelling guide',
+          subtitle: 'en.transliteration pronunciation',
           value: prefs.showTransliteration,
           enabled: prefs.showTranslations,
           onChanged: provider.setShowTransliteration,
