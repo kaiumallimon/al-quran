@@ -28,7 +28,8 @@ class DailyVerseCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.wb_sunny_outlined, color: colorScheme.primary, size: 20),
+              Icon(Icons.wb_sunny_outlined,
+                  color: colorScheme.primary, size: 20),
               const SizedBox(width: AppSpacing.sm),
               Text(
                 'Daily Verse',
@@ -119,7 +120,8 @@ class DailyVerseCard extends StatelessWidget {
       ..writeln()
       ..writeln('— ${verse.englishName} ${verse.reference}');
 
-    Share.share(text.toString());
+    SharePlus.instance.share(
+        ShareParams(downloadFallbackEnabled: true, text: text.toString()));
   }
 }
 
@@ -144,7 +146,10 @@ class DailyVersePlaceholder extends StatelessWidget {
           Text(
             'Loading today\'s verse...',
             style: AppTypography.caption(context).copyWith(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurface
+                  .withValues(alpha: 0.5),
             ),
           ),
         ],

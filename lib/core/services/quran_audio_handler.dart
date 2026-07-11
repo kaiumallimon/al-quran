@@ -59,6 +59,7 @@ class QuranAudioHandler extends BaseAudioHandler
     }
   }
 
+  @override
   Future<void> setSpeed(double speed) => _player.setSpeed(speed);
 
   Future<void> setPlaybackRepeatMode(AudioRepeatMode mode) async {

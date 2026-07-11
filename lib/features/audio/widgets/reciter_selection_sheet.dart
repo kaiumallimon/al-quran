@@ -36,10 +36,12 @@ class ReciterSelectionSheet extends StatelessWidget {
                       : null,
                   onTap: () async {
                     await audio.changeReciter(reciter.id);
-                    final reading = context.read<ReadingProvider>();
-                    await reading.updatePreferences(
-                      reading.preferences.copyWith(preferredReciter: reciter.id),
-                    );
+                    final reading = (context.mounted) ? context.read<ReadingProvider>() : null;
+                    if (reading != null) {
+                      await reading.updatePreferences(
+                        reading.preferences.copyWith(preferredReciter: reciter.id),
+                      );
+                    }
                     if (context.mounted) Navigator.pop(context);
                   },
                 ),

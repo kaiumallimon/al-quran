@@ -267,7 +267,7 @@ class InsightsRepository {
     if (goal.targetAyahs <= 0) return [];
 
     if (goal.completedAyahs >= goal.targetAyahs) {
-      return [
+      return const [
         InsightModel(
           id: 'goal_complete',
           message: "You've completed today's reading goal.",
@@ -356,7 +356,7 @@ class InsightsRepository {
       ];
     }
 
-    return [
+    return const [
       InsightModel(
         id: 'week_gentle',
         message:

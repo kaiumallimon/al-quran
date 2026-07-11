@@ -26,11 +26,11 @@ class QuranApiClient {
       return _handleResponse(response);
     } on http.ClientException catch (e) {
       AppLogger.error(_tag, 'Network error', e);
-      throw NetworkException('Unable to connect. Please check your internet.');
+      throw const NetworkException('Unable to connect. Please check your internet.');
     } catch (e) {
       if (e is AppException) rethrow;
       AppLogger.error(_tag, 'Unexpected error', e);
-      throw NetworkException('Something went wrong. Please try again.');
+      throw const NetworkException('Something went wrong. Please try again.');
     }
   }
 
@@ -40,7 +40,7 @@ class QuranApiClient {
     }
 
     if (response.statusCode != 200) {
-      throw ApiException(
+      throw  ApiException(
         'Server returned an error.',
         statusCode: response.statusCode,
       );

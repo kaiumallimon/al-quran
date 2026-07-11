@@ -194,7 +194,7 @@ class FullAudioPlayerSheet extends StatelessWidget {
   }
 
   void _cycleRepeatMode(AudioProvider audio) {
-    final modes = AudioRepeatMode.values;
+    const modes = AudioRepeatMode.values;
     final currentIndex = modes.indexOf(audio.preferences.repeatMode);
     final next = modes[(currentIndex + 1) % modes.length];
     audio.setRepeatMode(next);

@@ -261,7 +261,7 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsSection(
                 title: 'About',
                 children: [
-                  SettingsTile(
+                  const SettingsTile(
                     icon: Icons.info_outline,
                     title: 'App version',
                     subtitle: '1.0.0',

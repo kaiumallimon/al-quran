@@ -46,7 +46,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppConstants.appName),
+        title: const Text(AppConstants.appName),
         actions: [
           Consumer<NotificationProvider>(
             builder: (context, provider, _) {
@@ -118,7 +118,7 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   }
 
   Widget _buildContent(DashboardProvider provider) {
-    final maxWidth = AppConstants.expandedBreakpoint;
+    const maxWidth = AppConstants.expandedBreakpoint;
 
     return LayoutBuilder(
       builder: (context, constraints) {
