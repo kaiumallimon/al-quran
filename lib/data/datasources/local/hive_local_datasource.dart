@@ -228,6 +228,19 @@ class HiveLocalDataSource {
     await _progressBox.put('scroll_$surahNumber', ayahNumber);
   }
 
+  Future<Map<int, int>> getAllScrollPositions() async {
+    final positions = <int, int>{};
+    for (final key in _progressBox.keys) {
+      if (key is! String || !key.startsWith('scroll_')) continue;
+      final surahNumber = int.tryParse(key.substring(7));
+      final ayahNumber = _progressBox.get(key);
+      if (surahNumber != null && ayahNumber is int) {
+        positions[surahNumber] = ayahNumber;
+      }
+    }
+    return positions;
+  }
+
   // --- Search History ---
 
   Future<List<String>> getRecentSearches() async {

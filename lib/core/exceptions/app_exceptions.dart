@@ -35,3 +35,13 @@ class StorageException extends AppException {
 class AudioException extends AppException {
   const AudioException(super.message, {super.code});
 }
+
+/// Thrown when authentication fails or the user is unauthorized.
+class AuthenticationException extends AppException {
+  const AuthenticationException(super.message, {super.code});
+}
+
+/// Thrown when cloud synchronization fails.
+class SyncException extends AppException {
+  const SyncException(super.message, {super.code});
+}
