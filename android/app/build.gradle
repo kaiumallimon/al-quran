@@ -58,6 +58,8 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        // Keep only needed locales to avoid Windows resource-merge failures.
+        resConfigs "en", "ar", "ur"
     }
 
     signingConfigs {

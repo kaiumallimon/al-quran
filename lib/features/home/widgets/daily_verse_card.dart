@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
@@ -93,11 +92,6 @@ class DailyVerseCard extends StatelessWidget {
                 onPressed: () {},
                 tooltip: 'Bookmark',
               ),
-              IconButton(
-                icon: const Icon(Icons.share_outlined),
-                onPressed: () => _shareVerse(verse),
-                tooltip: 'Share',
-              ),
               if (onPlayAudio != null)
                 IconButton(
                   icon: const Icon(Icons.play_circle_outline),
@@ -109,19 +103,6 @@ class DailyVerseCard extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void _shareVerse(DailyVerseModel verse) {
-    final ayah = verse.ayah;
-    final text = StringBuffer()
-      ..writeln(ayah.text)
-      ..writeln()
-      ..writeln(ayah.englishText ?? '')
-      ..writeln()
-      ..writeln('— ${verse.englishName} ${verse.reference}');
-
-    SharePlus.instance.share(
-        ShareParams(downloadFallbackEnabled: true, text: text.toString()));
   }
 }
 

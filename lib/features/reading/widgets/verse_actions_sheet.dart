@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
@@ -65,14 +64,6 @@ class _VerseActionsSheet extends StatelessWidget {
             onTap: () {
               Clipboard.setData(ClipboardData(text: _formatVerseText()));
               _closeWithMessage(context, 'Verse copied');
-            },
-          ),
-          _ActionTile(
-            icon: Icons.share_outlined,
-            label: 'Share',
-            onTap: () {
-              Share.share(_formatVerseText());
-              Navigator.pop(context);
             },
           ),
           _ActionTile(
