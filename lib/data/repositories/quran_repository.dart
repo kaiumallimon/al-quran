@@ -94,6 +94,8 @@ class QuranRepository {
     final cached = await _local.getAyah(ayahNumber);
     if (cached != null &&
         cached.englishText != null &&
+        cached.banglaTransliteration != null &&
+        cached.banglaTranslation != null &&
         cached.text.isNotEmpty) {
       _refreshAyahInBackground(ayahNumber);
       return cached;
@@ -106,11 +108,7 @@ class QuranRepository {
     try {
       final ayah = await _remote.fetchAyahWithEditions(
         ayahNumber,
-        [
-          ApiConstants.editionArabic,
-          ApiConstants.editionEnglish,
-          ApiConstants.editionBanglaTransliteration,
-        ],
+        ApiConstants.surahReadingEditions,
       );
       await _local.saveAyah(ayah);
       return ayah;
@@ -138,7 +136,9 @@ class QuranRepository {
     if (!refresh) {
       final cachedAyahs = await _local.getSurahAyahs(surahNumber);
       final hasTranslations = cachedAyahs.isNotEmpty &&
-          cachedAyahs.first.englishText != null;
+          cachedAyahs.first.englishText != null &&
+          cachedAyahs.first.banglaTransliteration != null &&
+          cachedAyahs.first.banglaTranslation != null;
       if (cachedAyahs.isNotEmpty && hasTranslations) {
         _refreshSurahWithTranslationsInBackground(surahNumber);
         final surah = await _resolveSurahMeta(surahNumber);
@@ -155,11 +155,7 @@ class QuranRepository {
     try {
       final ayahs = await _remote.fetchSurahWithEditions(
         surahNumber,
-        [
-          ApiConstants.editionArabic,
-          ApiConstants.editionEnglish,
-          ApiConstants.editionBanglaTransliteration,
-        ],
+        ApiConstants.surahReadingEditions,
       );
       await _local.saveSurahAyahs(surahNumber, ayahs);
       final surah = await _resolveSurahMeta(surahNumber);

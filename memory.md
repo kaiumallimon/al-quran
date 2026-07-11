@@ -68,7 +68,9 @@ Track of what has been implemented and what remains. Updated after each feature.
 | ReadingScreenPage | Done | ListView.builder for performance, scroll restore, progress tracking |
 | SurahHeader | Done | Arabic name, bismillah (except Surah 9) |
 | ReadingControlsBar | Done | Font size, translation toggle, reading mode, offline save |
-| AyahCard | Done | Arabic, English, Bangla, sajda indicator, highlight |
+| AyahCard | Done | Arabic, English, transliteration, Bangla translation, sajda indicator, highlight |
+| TranslationDisplaySheet | Done | Toggle English, transliteration, Bangla layers |
+| ReadingModeSheet | Done | Responsive draggable bottom sheet |
 | VerseActionsSheet | Done | Bookmark, favorite, copy, share, note, reflection, play, repeat |
 | ReadingModeSheet | Done | Normal, focus, hide translations, Arabic only, translation only |
 | ReadingBottomBar | Done | Audio placeholder for next feature |
@@ -225,7 +227,8 @@ Track of what has been implemented and what remains. Updated after each feature.
 |---------|-----------|
 | Arabic text | `quran-uthmani` |
 | English translation | `en.sahih` |
-| Bangla | `bn.bengali` |
+| Transliteration (pronunciation) | `en.transliteration` |
+| Bangla translation | `bn.bengali` |
 | Audio (default reciter) | `ar.alafasy` |
 
 Reference: `api.yaml` (alquran.cloud v1)

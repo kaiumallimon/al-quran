@@ -7,6 +7,9 @@ class ReadingPreferencesModel {
     this.arabicFontSize = AppConstants.defaultArabicFontSize,
     this.translationFontSize = AppConstants.defaultTranslationFontSize,
     this.showTranslations = true,
+    this.showEnglishTranslation = true,
+    this.showTransliteration = true,
+    this.showBanglaTranslation = true,
     this.readingMode = ReadingMode.normal,
     this.preferredReciter = 'ar.alafasy',
     this.lineHeight = 1.8,
@@ -15,6 +18,9 @@ class ReadingPreferencesModel {
   final double arabicFontSize;
   final double translationFontSize;
   final bool showTranslations;
+  final bool showEnglishTranslation;
+  final bool showTransliteration;
+  final bool showBanglaTranslation;
   final ReadingMode readingMode;
   final String preferredReciter;
   final double lineHeight;
@@ -27,10 +33,22 @@ class ReadingPreferencesModel {
     return readingMode != ReadingMode.arabicOnly;
   }
 
+  bool get showEnglish =>
+      showTranslationText && showEnglishTranslation;
+
+  bool get showTransliterationText =>
+      showTranslationText && showTransliteration;
+
+  bool get showBangla =>
+      showTranslationText && showBanglaTranslation;
+
   ReadingPreferencesModel copyWith({
     double? arabicFontSize,
     double? translationFontSize,
     bool? showTranslations,
+    bool? showEnglishTranslation,
+    bool? showTransliteration,
+    bool? showBanglaTranslation,
     ReadingMode? readingMode,
     String? preferredReciter,
     double? lineHeight,
@@ -39,6 +57,11 @@ class ReadingPreferencesModel {
       arabicFontSize: arabicFontSize ?? this.arabicFontSize,
       translationFontSize: translationFontSize ?? this.translationFontSize,
       showTranslations: showTranslations ?? this.showTranslations,
+      showEnglishTranslation:
+          showEnglishTranslation ?? this.showEnglishTranslation,
+      showTransliteration: showTransliteration ?? this.showTransliteration,
+      showBanglaTranslation:
+          showBanglaTranslation ?? this.showBanglaTranslation,
       readingMode: readingMode ?? this.readingMode,
       preferredReciter: preferredReciter ?? this.preferredReciter,
       lineHeight: lineHeight ?? this.lineHeight,
@@ -54,6 +77,9 @@ class ReadingPreferencesModel {
           (map['translationFontSize'] as num?)?.toDouble() ??
               AppConstants.defaultTranslationFontSize,
       showTranslations: map['showTranslations'] as bool? ?? true,
+      showEnglishTranslation: map['showEnglishTranslation'] as bool? ?? true,
+      showTransliteration: map['showTransliteration'] as bool? ?? true,
+      showBanglaTranslation: map['showBanglaTranslation'] as bool? ?? true,
       readingMode: ReadingMode.fromString(
         map['readingMode'] as String? ?? 'normal',
       ),
@@ -66,6 +92,9 @@ class ReadingPreferencesModel {
         'arabicFontSize': arabicFontSize,
         'translationFontSize': translationFontSize,
         'showTranslations': showTranslations,
+        'showEnglishTranslation': showEnglishTranslation,
+        'showTransliteration': showTransliteration,
+        'showBanglaTranslation': showBanglaTranslation,
         'readingMode': readingMode.name,
         'preferredReciter': preferredReciter,
         'lineHeight': lineHeight,

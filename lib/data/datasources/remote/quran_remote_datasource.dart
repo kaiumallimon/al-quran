@@ -96,15 +96,12 @@ class QuranRemoteDataSource {
             surahNumber: number,
           );
         } else if (merged.containsKey(numInSurah)) {
-          if (editionId.startsWith('en.')) {
-            merged[numInSurah] =
-                merged[numInSurah]!.copyWith(englishText: text);
-          } else if (editionId.startsWith('bn.')) {
-            merged[numInSurah] = merged[numInSurah]!.copyWith(
-              banglaTransliteration: text,
-              banglaTranslation: text,
-            );
-          }
+          merged[numInSurah] = _applyEditionText(
+            merged[numInSurah]!,
+            editionId: editionId,
+            editionType: edition?['type'] as String? ?? '',
+            text: text,
+          );
         }
       }
     }
@@ -115,8 +112,6 @@ class QuranRemoteDataSource {
 
   AyahModel _mergeAyahEditions(List dataList) {
     AyahModel? base;
-    String? englishText;
-    String? banglaText;
 
     for (final item in dataList) {
       final map = item as Map<String, dynamic>;
@@ -126,10 +121,13 @@ class QuranRemoteDataSource {
 
       if (_isArabicEdition(editionId)) {
         base = AyahModel.fromJson(map);
-      } else if (editionId.startsWith('en.')) {
-        englishText = text;
-      } else if (editionId.startsWith('bn.')) {
-        banglaText = text;
+      } else if (base != null) {
+        base = _applyEditionText(
+          base,
+          editionId: editionId,
+          editionType: edition?['type'] as String? ?? '',
+          text: text,
+        );
       }
     }
 
@@ -137,11 +135,26 @@ class QuranRemoteDataSource {
       base = AyahModel.fromJson(dataList.first as Map<String, dynamic>);
     }
 
-    return base!.copyWith(
-      englishText: englishText,
-      banglaTransliteration: banglaText,
-      banglaTranslation: banglaText,
-    );
+    return base!;
+  }
+
+  AyahModel _applyEditionText(
+    AyahModel ayah, {
+    required String editionId,
+    required String editionType,
+    required String text,
+  }) {
+    if (editionType == 'transliteration' ||
+        editionId == ApiConstants.editionTransliteration) {
+      return ayah.copyWith(banglaTransliteration: text);
+    }
+    if (editionId.startsWith('en.')) {
+      return ayah.copyWith(englishText: text);
+    }
+    if (editionId.startsWith('bn.')) {
+      return ayah.copyWith(banglaTranslation: text);
+    }
+    return ayah;
   }
 
   bool _isArabicEdition(String editionId) {

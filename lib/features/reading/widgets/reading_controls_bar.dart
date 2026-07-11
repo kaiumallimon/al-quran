@@ -5,6 +5,7 @@ import '../../../core/theme/app_spacing.dart';
 import '../../../data/models/reading_mode.dart';
 import '../providers/reading_provider.dart';
 import 'reading_mode_sheet.dart';
+import 'translation_display_sheet.dart';
 
 /// Compact reading controls below the app bar.
 class ReadingControlsBar extends StatelessWidget {
@@ -54,7 +55,7 @@ class ReadingControlsBar extends StatelessWidget {
                     : Icons.translate_outlined,
                 label: 'Translation',
                 isActive: prefs.showTranslations,
-                onTap: provider.toggleTranslations,
+                onTap: () => showTranslationDisplaySheet(context),
               ),
               _ControlChip(
                 icon: Icons.auto_stories_outlined,

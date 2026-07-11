@@ -178,6 +178,14 @@ class _VerseActionsSheet extends StatelessWidget {
       buffer.writeln(ayah.englishText);
       buffer.writeln();
     }
+    if (ayah.banglaTransliteration != null) {
+      buffer.writeln(ayah.banglaTransliteration);
+      buffer.writeln();
+    }
+    if (ayah.banglaTranslation != null) {
+      buffer.writeln(ayah.banglaTranslation);
+      buffer.writeln();
+    }
     buffer.write('— $surahEnglishName ${ayah.surahNumber}:${ayah.numberInSurah}');
     return buffer.toString();
   }

@@ -121,8 +121,7 @@ class AyahCard extends StatelessWidget {
                     textDirection: TextDirection.rtl,
                   ),
                 ],
-                if (preferences.showTranslationText &&
-                    ayah.englishText != null) ...[
+                if (preferences.showEnglish && ayah.englishText != null) ...[
                   const SizedBox(height: AppSpacing.md),
                   Text(
                     ayah.englishText!,
@@ -133,15 +132,27 @@ class AyahCard extends StatelessWidget {
                     ),
                   ),
                 ],
-                if (preferences.showTranslationText &&
+                if (preferences.showTransliterationText &&
                     ayah.banglaTransliteration != null) ...[
                   const SizedBox(height: AppSpacing.sm),
                   Text(
                     ayah.banglaTransliteration!,
-                    style: AppTypography.bangla(
-                      fontSize: preferences.translationFontSize - 2,
-                      color: colorScheme.onSurface.withValues(alpha: 0.65),
+                    style: AppTypography.body(context).copyWith(
+                      fontSize: preferences.translationFontSize - 1,
+                      height: preferences.lineHeight,
+                      fontStyle: FontStyle.italic,
+                      color: colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
+                  ),
+                ],
+                if (preferences.showBangla && ayah.banglaTranslation != null) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    ayah.banglaTranslation!,
+                    style: AppTypography.bangla(
+                      fontSize: preferences.translationFontSize,
+                      color: colorScheme.onSurface.withValues(alpha: 0.85),
+                    ).copyWith(height: preferences.lineHeight),
                   ),
                 ],
               ],

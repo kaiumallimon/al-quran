@@ -166,6 +166,26 @@ class ReadingProvider extends ChangeNotifier {
     );
   }
 
+  Future<void> setShowTranslations(bool value) async {
+    await updatePreferences(_preferences.copyWith(showTranslations: value));
+  }
+
+  Future<void> setShowEnglishTranslation(bool value) async {
+    await updatePreferences(
+      _preferences.copyWith(showEnglishTranslation: value),
+    );
+  }
+
+  Future<void> setShowTransliteration(bool value) async {
+    await updatePreferences(_preferences.copyWith(showTransliteration: value));
+  }
+
+  Future<void> setShowBanglaTranslation(bool value) async {
+    await updatePreferences(
+      _preferences.copyWith(showBanglaTranslation: value),
+    );
+  }
+
   Future<void> setReadingMode(ReadingMode mode) async {
     await updatePreferences(_preferences.copyWith(readingMode: mode));
   }
