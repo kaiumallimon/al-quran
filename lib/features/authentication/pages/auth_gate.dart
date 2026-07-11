@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/theme/app_spacing.dart';
+import '../../../core/widgets/app_logo.dart';
 import '../../shell/pages/app_shell.dart';
 import '../providers/auth_provider.dart';
 import 'auth_page.dart';
@@ -29,7 +31,16 @@ class _AuthGateState extends State<AuthGate> {
     switch (auth.status) {
       case AuthStatus.checking:
         return const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AppLogo(size: 96, elevation: 2),
+                SizedBox(height: AppSpacing.lg),
+                CircularProgressIndicator(),
+              ],
+            ),
+          ),
         );
       case AuthStatus.signingIn:
       case AuthStatus.authenticated:

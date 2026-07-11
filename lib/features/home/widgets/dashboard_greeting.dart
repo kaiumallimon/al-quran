@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/app_logo.dart';
 
 /// Time-based greeting for the dashboard.
 class DashboardGreeting extends StatelessWidget {
@@ -13,18 +14,27 @@ class DashboardGreeting extends StatelessWidget {
     final greeting = _getGreeting();
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          greeting,
-          style: AppTypography.headline(context),
-        ),
-        const SizedBox(height: AppSpacing.xs),
-        Text(
-          'Welcome to ${AppConstants.appName}',
-          style: AppTypography.body(context).copyWith(
-            color: colorScheme.onSurface.withValues(alpha: 0.6),
+        const AppLogo(size: 48),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                greeting,
+                style: AppTypography.headline(context),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              Text(
+                'Welcome to ${AppConstants.appName}',
+                style: AppTypography.body(context).copyWith(
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
+              ),
+            ],
           ),
         ),
       ],

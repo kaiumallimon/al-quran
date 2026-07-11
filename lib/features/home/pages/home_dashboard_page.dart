@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_constants.dart';
 import '../../../core/navigation/notification_navigation.dart';
+import '../../../core/widgets/app_logo.dart';
 import '../../../core/navigation/insights_navigation.dart';
 import '../../../core/navigation/reading_navigation.dart';
 import '../../../core/navigation/tracking_navigation.dart';
@@ -46,7 +47,14 @@ class _HomeDashboardPageState extends State<HomeDashboardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppConstants.appName),
+        title: const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppLogo(size: 28),
+            SizedBox(width: AppSpacing.sm),
+            Text(AppConstants.appName),
+          ],
+        ),
         actions: [
           Consumer<NotificationProvider>(
             builder: (context, provider, _) {

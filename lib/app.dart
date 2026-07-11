@@ -5,8 +5,8 @@ import 'core/di/service_locator.dart';
 import 'core/theme/app_theme.dart';
 import 'data/models/app_settings_model.dart';
 import 'features/audio/providers/audio_provider.dart';
-import 'features/authentication/pages/auth_gate.dart';
 import 'features/authentication/providers/auth_provider.dart';
+import 'features/splash/pages/splash_page.dart';
 import 'features/home/providers/dashboard_provider.dart';
 import 'features/insights/providers/insights_provider.dart';
 import 'features/notifications/providers/notification_provider.dart';
@@ -99,7 +99,7 @@ class QuranCompanionApp extends StatelessWidget {
             theme: AppTheme.light,
             darkTheme: darkTheme,
             themeMode: themeMode,
-            home: const AuthGate(),
+            home: const SplashPage(),
           );
         },
       ),

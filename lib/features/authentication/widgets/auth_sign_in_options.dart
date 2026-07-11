@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/app_logo.dart';
 import '../providers/auth_provider.dart';
 
 /// Inline error banner for authentication failures.
@@ -100,19 +101,7 @@ class AuthHeader extends StatelessWidget {
 
     return Column(
       children: [
-        Container(
-          width: 88,
-          height: 88,
-          decoration: BoxDecoration(
-            color: colorScheme.primaryContainer,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
-          ),
-          child: Icon(
-            Icons.menu_book_rounded,
-            size: 44,
-            color: colorScheme.onPrimaryContainer,
-          ),
-        ),
+        const AppLogo(size: 96, elevation: 2),
         const SizedBox(height: AppSpacing.lg),
         Text(
           title,

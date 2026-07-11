@@ -2,7 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_spacing.dart';
+import '../../../core/theme/app_typography.dart';
+import '../../../core/widgets/app_logo.dart';
 import '../../../data/models/app_settings_model.dart';
 import '../../../core/di/service_locator.dart';
 import '../../audio/providers/audio_provider.dart';
@@ -268,6 +271,34 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsSection(
                 title: 'About',
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.md,
+                      vertical: AppSpacing.lg,
+                    ),
+                    child: Column(
+                      children: [
+                        const AppLogo(size: 72, elevation: 2),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          AppConstants.appName,
+                          style: AppTypography.title(context),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: AppSpacing.xs),
+                        Text(
+                          'Your offline-first Quran reading companion.',
+                          style: AppTypography.small(context).copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.6),
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
                   const SettingsTile(
                     icon: Icons.info_outline,
                     title: 'App version',
